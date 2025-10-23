@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:primeiro_app/widgets/subttitulo_widget.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.subtitulo});
@@ -11,14 +12,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +22,14 @@ class _MyHomePageState extends State<MyHomePage> {
       
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
        
-        title: Text(widget.title),
+        title: Row(
+          children: [
+            Text(widget.title),
+           SizedBox(width: 8),
+          SubttituloWidget(label: widget.subtitulo)
+              
+          ],
+        ),
       ),
       body: Center(
         
@@ -37,17 +38,11 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+           
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      
+     );
   }
 }
