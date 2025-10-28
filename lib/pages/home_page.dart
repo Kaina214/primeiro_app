@@ -11,11 +11,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-   List<String> tarefas = [
-    'Tarefa 1',
-    'Tarefa 2',
-    'Tarefa 3', 
-   ];
+  List<String> tarefas = ['Tarefa 1', 'Tarefa 2', 'Tarefa 3'];
+  late TextEditingController controller;
+  @override
+  void initState() {
+    controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              controller: controller,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Digite uma tarefa',
@@ -55,9 +65,26 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      floatingActionButton: 
-      onPressed: _adicionarTarefa(),
-      child:Icon(Icons.add),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _adicionarTarefa,
+
+        child: Icon(Icons.add),
+      ),
     );
+  }
+
+  void _adicionarTarefa() {
+    var tarefaDigigtado = controller.text;
+    if (tarefaDigigtado.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(" Você precisa digitar uma tarefa! ")),
+      );
+      return;
+    }
+    setState(() {
+      tarefas.add(tarefaDigigtado);
+     
+    });
+      
   }
 }
