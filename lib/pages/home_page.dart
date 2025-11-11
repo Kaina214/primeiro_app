@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:primeiro_app/widgets/subttitulo_widget.dart';
 import 'package:primeiro_app/models/tarefa_model.dart';
@@ -15,11 +16,44 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Tarefa> tarefas = [];
   late TextEditingController controllerDescricao;
   late TextEditingController controllerTitulo;
+
+  bool isLoading = false;
+
   @override
   void initState() {
     controllerTitulo = TextEditingController();
     controllerDescricao = TextEditingController();
+
+    _getTarefas();
+
     super.initState();
+  }
+
+  Future<void> _getTarefas() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    var dio = Dio(
+      BaseOptions(
+        connectTimeout: Duration(seconds: 30),
+        baseUrl: 'https://6912665e52a60f10c8218aa2.mockapi.io/api/v1',
+      ),
+    );
+    var response = await dio.get('/tarefa');
+    var listaData = response.data as List;
+
+    for (var data in listaData) {
+      var tarefa = Tarefa(
+        titulo: data['titulo'],
+        descricao: data['descricao'],
+        data: '',
+      );
+      tarefas.add(tarefa);
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -43,44 +77,46 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: controllerTitulo,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Digite uma título para a tarefa',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: controllerDescricao,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Digite uma Descrição para a tarefa',
-              ),
-            ),
-          ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: controllerTitulo,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Digite uma título para a tarefa',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: controllerDescricao,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Digite uma Descrição para a tarefa',
+                    ),
+                  ),
+                ),
 
-          Expanded(
-            child: ListView.builder(
-              itemCount: tarefas.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.task),
-                  title: Text(tarefas[index].titulo),
-                  subtitle: Text(tarefas[index].descricao),
-                  trailing: Icon(Icons.arrow_right_alt_outlined),
-                );
-              },
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: tarefas.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: Icon(Icons.task),
+                        title: Text(tarefas[index].titulo),
+                        subtitle: Text(tarefas[index].descricao),
+                        trailing: Icon(Icons.arrow_right_alt_outlined),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _adicionarTarefa,
 
