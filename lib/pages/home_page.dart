@@ -99,7 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
           return TarefaFormPage();
         },
       ),
-    );
+    ).then((_) {
+      setState(() {
+        tarefas.clear();
+        _getTarefas();
+      });
 
    
     // }
@@ -109,5 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // });
     // controllerDescricao.clear();
     // controllerTitulo.clear();
+  }
+    );
   }
 }

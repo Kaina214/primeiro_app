@@ -91,7 +91,10 @@ var dio = Dio(
       'descricao': descricaoTarefa,
     }
   );
+
+    if(context.mounted) Navigator.pop(context);
+
+  }
     }
 
-}
 }
